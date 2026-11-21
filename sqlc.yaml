@@ -1,0 +1,27 @@
+version: "2"
+sql:
+  - engine: sqlite
+    schema: internal/infrastructure/sqlite/migrations
+    queries: internal/infrastructure/sqlite/queries
+    gen:
+      go:
+        package: sqlcgen
+        out: internal/infrastructure/sqlite/sqlcgen
+        emit_pointers_for_null_types: true
+        rename:
+          parent_id: Parent
+          folder_id: Folder
+        overrides:
+          - column: folder.parent_id
+            go_type:
+              import: "uuid"
+              type: "UUID"
+              pointer: true
+          - column: "*.id"
+            go_type:
+              import: "uuid"
+              type: "UUID"
+          - column: "*.*_id"
+            go_type:
+              import: "uuid"
+              type: "UUID"
