@@ -76,7 +76,8 @@ func (h *DriveHandler) RenameFileDialog(w http.ResponseWriter, r *http.Request) 
 	id := r.PathValue("id")
 	in := r.URL.Query().Get("in")
 	crumbs := queryCrumbs(r, "c")
-	form := views.RenameForm{Title: "Rename file", PostURL: renameFileURL(id, in, crumbs), CancelURL: folderListURL(in, crumbs)}
+	name := r.URL.Query().Get("name")
+	form := views.RenameForm{Title: "Rename file", Name: name, PostURL: renameFileURL(id, in, crumbs, name), CancelURL: folderListURL(in, crumbs)}
 	h.renderWithDialog(w, r, http.StatusOK, in, crumbs, views.RenameDialog(form))
 }
 
@@ -84,10 +85,11 @@ func (h *DriveHandler) RenameFile(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	in := r.URL.Query().Get("in")
 	crumbs := queryCrumbs(r, "c")
+	originalName := r.URL.Query().Get("name")
 	form := views.RenameForm{
 		Title:     "Rename file",
 		Name:      r.PostFormValue("name"),
-		PostURL:   renameFileURL(id, in, crumbs),
+		PostURL:   renameFileURL(id, in, crumbs, originalName),
 		CancelURL: folderListURL(in, crumbs),
 	}
 

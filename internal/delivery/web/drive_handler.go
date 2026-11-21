@@ -194,7 +194,7 @@ func (h *DriveHandler) presentDrive(currentID string, crumbs []crumb, folders []
 		folderRows[i] = views.FolderRow{
 			Name:      f.Name,
 			OpenURL:   folderListURL(id, next),
-			RenameURL: renameFolderURL(id, currentID, crumbs),
+			RenameURL: renameFolderURL(id, currentID, crumbs, f.Name),
 			MoveURL:   moveFolderURL(id, currentID, crumbs, "", nil),
 			DeleteURL: deleteFolderURL(id, currentID, crumbs),
 		}
@@ -209,7 +209,7 @@ func (h *DriveHandler) presentDrive(currentID string, crumbs []crumb, folders []
 			ModifiedDisplay: formatModified(f.UpdatedAt),
 			Icon:            iconForMimeType(f.MimeType),
 			DownloadURL:     downloadFileURL(id),
-			RenameURL:       renameFileURL(id, currentID, crumbs),
+			RenameURL:       renameFileURL(id, currentID, crumbs, f.Name),
 			MoveURL:         moveFileURL(id, currentID, crumbs, "", nil),
 			DeleteURL:       deleteFileURL(id, currentID, crumbs),
 		}

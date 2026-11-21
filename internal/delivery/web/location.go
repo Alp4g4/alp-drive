@@ -53,8 +53,9 @@ func newFolderURL(in string, crumbs []crumb) string {
 	return withQuery("/folders/new", q)
 }
 
-func renameFolderURL(id, in string, crumbs []crumb) string {
+func renameFolderURL(id, in string, crumbs []crumb, name string) string {
 	q := returnQuery(in, crumbs)
+	q.Set("name", name)
 	return withQuery("/folders/"+id+"/rename", q)
 }
 
@@ -75,8 +76,9 @@ func uploadURL(in string, crumbs []crumb) string {
 	return withQuery("/files/new", q)
 }
 
-func renameFileURL(id, in string, crumbs []crumb) string {
+func renameFileURL(id, in string, crumbs []crumb, name string) string {
 	q := returnQuery(in, crumbs)
+	q.Set("name", name)
 	return withQuery("/files/"+id+"/rename", q)
 }
 

@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-//go:embed app.css htmx.min.js
+//go:embed app.css app.js htmx.min.js
 var files embed.FS
 
 var versions = hashFiles()

@@ -412,7 +412,7 @@ func rowMenu(renameURL, moveURL, deleteURL, downloadURL string) templ.Component 
 			templ_7745c5c3_Var14 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<details class=\"relative justify-self-end\"><summary class=\"row-menu-trigger flex h-7 w-7 items-center justify-center rounded-md text-content-muted opacity-0 hover:bg-surface-hover group-hover:opacity-100\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<details class=\"row-menu relative justify-self-end\"><summary class=\"row-menu-trigger flex h-7 w-7 items-center justify-center rounded-md text-content-muted opacity-0 hover:bg-surface-hover group-hover:opacity-100\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
