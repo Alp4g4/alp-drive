@@ -1,0 +1,31 @@
+package views
+
+import "alp-drive/internal/delivery/web/views/components"
+
+type UploadForm struct {
+	FileError string
+	PostURL   string
+	CancelURL string
+}
+
+templ UploadDialog(form UploadForm) {
+	@components.DialogShell("Upload file") {
+		<form
+			method="post"
+			action={ form.PostURL }
+			enctype="multipart/form-data"
+			hx-post={ form.PostURL }
+			hx-encoding="multipart/form-data"
+			hx-target="#dialog-region"
+			hx-swap="innerHTML"
+			hx-disabled-elt="find button[type=submit]"
+			class="space-y-4"
+		>
+			@components.FileField(components.FileFieldProps{ID: "file", Name: "file", Label: "File", Error: form.FileError, Required: true})
+			<div class="flex justify-end gap-2.5 pt-1">
+				@components.LinkButton(form.CancelURL, components.LinkButtonProps{ButtonProps: components.ButtonProps{Label: "Cancel", Variant: components.ButtonGhost}})
+				@components.Button(components.ButtonProps{Label: "Upload", Variant: components.ButtonPrimary, Submit: true})
+			</div>
+		</form>
+	}
+}

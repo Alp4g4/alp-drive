@@ -1,0 +1,60 @@
+package views
+
+import "alp-drive/internal/delivery/web/views/components"
+
+type MoveTargetFolder struct {
+	Name      string
+	BrowseURL string
+}
+
+type MoveForm struct {
+	Title      string
+	Breadcrumb []BreadcrumbItem
+	Targets    []MoveTargetFolder
+	Empty      bool
+	PostURL    string
+	CancelURL  string
+}
+
+templ MoveDialog(form MoveForm) {
+	@components.DialogShell(form.Title) {
+		<nav aria-label="Destination" class="mb-3 flex min-w-0 flex-wrap items-center gap-1.5 text-xs text-content-muted">
+			for i, crumb := range form.Breadcrumb {
+				if i > 0 {
+					@components.Icon(components.IconChevronRight)
+				}
+				if crumb.Current {
+					<span class="font-medium text-content">{ crumb.Name }</span>
+				} else {
+					<a href={ templ.SafeURL(crumb.URL) } hx-get={ crumb.URL } hx-target="#dialog-region" hx-swap="innerHTML" class="rounded px-0.5 hover:text-content">{ crumb.Name }</a>
+				}
+			}
+		</nav>
+		<div class="mb-4 max-h-48 overflow-y-auto rounded-md border border-border">
+			if form.Empty {
+				<p class="px-3 py-4 text-center text-xs text-content-faint">No subfolders here.</p>
+			} else {
+				for _, t := range form.Targets {
+					<a href={ templ.SafeURL(t.BrowseURL) } hx-get={ t.BrowseURL } hx-target="#dialog-region" hx-swap="innerHTML" class="flex items-center gap-2.5 border-b border-border px-3 py-2 text-sm last:border-b-0 hover:bg-surface-hover">
+						<span class="flex-none text-primary">
+							@components.Icon(components.IconFolder)
+						</span>
+						<span class="truncate">{ t.Name }</span>
+					</a>
+				}
+			}
+		</div>
+		<form
+			method="post"
+			action={ form.PostURL }
+			hx-post={ form.PostURL }
+			hx-target="#dialog-region"
+			hx-swap="innerHTML"
+			hx-disabled-elt="find button[type=submit]"
+			class="flex justify-end gap-2.5"
+		>
+			@components.LinkButton(form.CancelURL, components.LinkButtonProps{ButtonProps: components.ButtonProps{Label: "Cancel", Variant: components.ButtonGhost}})
+			@components.Button(components.ButtonProps{Label: "Move here", Variant: components.ButtonPrimary, Submit: true})
+		</form>
+	}
+}

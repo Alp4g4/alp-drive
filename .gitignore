@@ -29,6 +29,13 @@ go.work.sum
 # env file
 .env
 
+# Tailwind CLI tooling (package.json pins the version; node_modules is not committed)
+node_modules/
+
+# local dev data: the sqlite database and uploaded file content
+/data/
+bin/
+
 # Editor/IDE
 # .idea/
 # .vscode/

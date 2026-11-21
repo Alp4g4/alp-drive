@@ -1,0 +1,31 @@
+package views
+
+import "alp-drive/internal/delivery/web/views/components"
+
+type RenameForm struct {
+	Title     string
+	Name      string
+	NameError string
+	PostURL   string
+	CancelURL string
+}
+
+templ RenameDialog(form RenameForm) {
+	@components.DialogShell(form.Title) {
+		<form
+			method="post"
+			action={ form.PostURL }
+			hx-post={ form.PostURL }
+			hx-target="#dialog-region"
+			hx-swap="innerHTML"
+			hx-disabled-elt="find button[type=submit]"
+			class="space-y-4"
+		>
+			@components.Field(components.FieldProps{ID: "name", Name: "name", Label: "Name", Type: "text", Value: form.Name, Error: form.NameError, Required: true})
+			<div class="flex justify-end gap-2.5 pt-1">
+				@components.LinkButton(form.CancelURL, components.LinkButtonProps{ButtonProps: components.ButtonProps{Label: "Cancel", Variant: components.ButtonGhost}})
+				@components.Button(components.ButtonProps{Label: "Rename", Variant: components.ButtonPrimary, Submit: true})
+			</div>
+		</form>
+	}
+}

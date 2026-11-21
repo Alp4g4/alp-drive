@@ -1,0 +1,81 @@
+package components
+
+import "strings"
+
+const fieldControl = "block h-9 w-full rounded-md border border-border bg-surface px-3 text-sm text-content placeholder:text-content-faint aria-invalid:border-danger"
+
+type FieldProps struct {
+	ID       string
+	Name     string
+	Label    string
+	Type     string
+	Value    string
+	Help     string
+	Error    string
+	Required bool
+}
+
+func (p FieldProps) describedBy() string {
+	var ids []string
+	if p.Help != "" {
+		ids = append(ids, p.ID+"-help")
+	}
+	if p.Error != "" {
+		ids = append(ids, p.ID+"-error")
+	}
+	return strings.Join(ids, " ")
+}
+
+templ Field(p FieldProps) {
+	<div class="space-y-1.5">
+		<label for={ p.ID } class="block text-sm font-medium text-content">{ p.Label }</label>
+		<input
+			id={ p.ID }
+			name={ p.Name }
+			type={ p.Type }
+			value={ p.Value }
+			required?={ p.Required }
+			if p.Error != "" {
+				aria-invalid="true"
+			}
+			if p.describedBy() != "" {
+				aria-describedby={ p.describedBy() }
+			}
+			class={ fieldControl, focusRing }
+		/>
+		if p.Help != "" {
+			<p id={ p.ID + "-help" } class="text-xs text-content-muted">{ p.Help }</p>
+		}
+		if p.Error != "" {
+			<p id={ p.ID + "-error" } class="text-xs text-danger">{ p.Error }</p>
+		}
+	</div>
+}
+
+type FileFieldProps struct {
+	ID       string
+	Name     string
+	Label    string
+	Error    string
+	Required bool
+}
+
+templ FileField(p FileFieldProps) {
+	<div class="space-y-1.5">
+		<label for={ p.ID } class="block text-sm font-medium text-content">{ p.Label }</label>
+		<input
+			id={ p.ID }
+			name={ p.Name }
+			type="file"
+			required?={ p.Required }
+			if p.Error != "" {
+				aria-invalid="true"
+				aria-describedby={ p.ID + "-error" }
+			}
+			class={ "block w-full text-sm text-content-muted file:mr-3 file:h-9 file:rounded-md file:border-0 file:bg-primary file:px-3.5 file:text-sm file:font-medium file:text-on-primary", focusRing }
+		/>
+		if p.Error != "" {
+			<p id={ p.ID + "-error" } class="text-xs text-danger">{ p.Error }</p>
+		}
+	</div>
+}

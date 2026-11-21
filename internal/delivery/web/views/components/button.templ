@@ -1,0 +1,67 @@
+package components
+
+type ButtonVariant int
+
+const (
+	ButtonPrimary ButtonVariant = iota
+	ButtonSecondary
+	ButtonGhost
+	ButtonDanger
+)
+
+const buttonBase = "inline-flex h-9 items-center justify-center gap-2 rounded-md px-3.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+
+var buttonVariants = map[ButtonVariant]string{
+	ButtonPrimary:   "bg-primary text-on-primary hover:bg-primary-hover",
+	ButtonSecondary: "border border-border bg-surface text-content hover:bg-surface-hover",
+	ButtonGhost:     "text-content-muted hover:bg-surface-hover hover:text-content",
+	ButtonDanger:    "bg-danger text-on-primary hover:bg-danger/90",
+}
+
+type ButtonProps struct {
+	Label   string
+	Variant ButtonVariant
+	Submit  bool
+	Icon    IconKind
+	HasIcon bool
+}
+
+func (p ButtonProps) buttonType() string {
+	if p.Submit {
+		return "submit"
+	}
+	return "button"
+}
+
+templ Button(p ButtonProps) {
+	<button type={ p.buttonType() } class={ buttonBase, buttonVariants[p.Variant], focusRing }>
+		if p.HasIcon {
+			@Icon(p.Icon)
+		}
+		{ p.Label }
+	</button>
+}
+
+type LinkButtonProps struct {
+	ButtonProps
+	HxGet    string
+	HxTarget string
+}
+
+templ LinkButton(href string, p LinkButtonProps) {
+	<a
+		href={ templ.SafeURL(href) }
+		if p.HxGet != "" {
+			hx-get={ p.HxGet }
+			hx-target={ p.HxTarget }
+			hx-swap="innerHTML"
+			hx-push-url="true"
+		}
+		class={ buttonBase, buttonVariants[p.Variant], focusRing }
+	>
+		if p.HasIcon {
+			@Icon(p.Icon)
+		}
+		{ p.Label }
+	</a>
+}

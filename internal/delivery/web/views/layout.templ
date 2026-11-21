@@ -1,0 +1,40 @@
+package views
+
+import "alp-drive/internal/delivery/web/static"
+
+const htmxConfig = `{"responseHandling":[{"code":"204","swap":false},{"code":"[23]..","swap":true},{"code":"[45]..","swap":true,"error":true}]}`
+
+templ Layout(title string, dialog templ.Component) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<meta name="htmx-config" content={ htmxConfig }/>
+			<title>{ title } · alp-drive</title>
+			<link rel="stylesheet" href={ static.URL("app.css") }/>
+			<script src={ static.URL("htmx.min.js") } defer></script>
+		</head>
+		<body class="bg-bg text-content">
+			<a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-md focus:bg-surface focus:px-4 focus:py-2">Skip to content</a>
+			<div id="main">
+				{ children... }
+			</div>
+			<div id="alerts" class="fixed inset-x-0 bottom-4 z-40 mx-auto flex w-full max-w-md flex-col gap-2 px-4"></div>
+			<div id="dialog-region">
+				if dialog != nil {
+					@dialog
+				}
+			</div>
+		</body>
+	</html>
+}
+
+templ ErrorPage(message string) {
+	@Layout("Error", nil) {
+		<div class="mx-auto max-w-lg px-4 py-16 text-center">
+			<h1 class="text-xl font-semibold text-content">Something went wrong</h1>
+			<p class="mt-2 text-sm text-content-muted">{ message }</p>
+		</div>
+	}
+}

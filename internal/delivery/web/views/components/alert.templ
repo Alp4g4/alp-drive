@@ -1,0 +1,17 @@
+package components
+
+type AlertVariant int
+
+const (
+	AlertDanger AlertVariant = iota
+)
+
+var alertVariants = map[AlertVariant]string{
+	AlertDanger: "border-danger bg-danger-subtle text-danger",
+}
+
+templ Alert(variant AlertVariant, message string) {
+	<div role="alert" class={ "flex gap-3 rounded-md border p-3 text-sm", alertVariants[variant] }>
+		<p>{ message }</p>
+	</div>
+}

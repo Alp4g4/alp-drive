@@ -1,0 +1,164 @@
+package views
+
+import "alp-drive/internal/delivery/web/views/components"
+
+type BreadcrumbItem struct {
+	Name    string
+	URL     string
+	Current bool
+}
+
+type FolderRow struct {
+	Name      string
+	OpenURL   string
+	RenameURL string
+	MoveURL   string
+	DeleteURL string
+}
+
+type FileRow struct {
+	Name            string
+	SizeDisplay     string
+	ModifiedDisplay string
+	Icon            components.IconKind
+	DownloadURL     string
+	RenameURL       string
+	MoveURL         string
+	DeleteURL       string
+}
+
+type DriveView struct {
+	Breadcrumb   []BreadcrumbItem
+	CanUpload    bool
+	NewFolderURL string
+	UploadURL    string
+	Folders      []FolderRow
+	Files        []FileRow
+	Empty        bool
+}
+
+templ DrivePage(title string, view DriveView, dialog templ.Component) {
+	@Layout(title, dialog) {
+		@DriveBrowser(view)
+	}
+}
+
+templ DriveBrowser(view DriveView) {
+	<div id="drive-browser">
+		<header class="flex h-14 items-center justify-between border-b border-border px-6">
+			<div class="flex items-center gap-2.5">
+				<div class="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-bg)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<ellipse cx="12" cy="6" rx="8" ry="3"></ellipse>
+						<path d="M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6"></path>
+						<path d="M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"></path>
+					</svg>
+				</div>
+				<span class="text-sm font-semibold tracking-tight">alp-drive</span>
+			</div>
+		</header>
+		<div class="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
+			<nav aria-label="Breadcrumb" class="flex min-w-0 items-center gap-1.5 text-sm text-content-muted">
+				for i, crumb := range view.Breadcrumb {
+					if i > 0 {
+						@components.Icon(components.IconChevronRight)
+					}
+					if crumb.Current {
+						<span class="font-medium text-content">{ crumb.Name }</span>
+					} else {
+						<a href={ templ.SafeURL(crumb.URL) } class="rounded px-0.5 hover:text-content">{ crumb.Name }</a>
+					}
+				}
+			</nav>
+			<div class="flex items-center gap-2.5">
+				@components.LinkButton(view.NewFolderURL, components.LinkButtonProps{
+					ButtonProps: components.ButtonProps{Label: "New folder", Variant: components.ButtonSecondary, Icon: components.IconFolderPlus, HasIcon: true},
+					HxGet:       view.NewFolderURL,
+					HxTarget:    "#dialog-region",
+				})
+				if view.CanUpload {
+					@components.LinkButton(view.UploadURL, components.LinkButtonProps{
+						ButtonProps: components.ButtonProps{Label: "Upload", Variant: components.ButtonPrimary, Icon: components.IconUpload, HasIcon: true},
+						HxGet:       view.UploadURL,
+						HxTarget:    "#dialog-region",
+					})
+				}
+			</div>
+		</div>
+		<div class="px-6 pb-10">
+			if view.Empty {
+				<p class="px-3 py-10 text-center text-sm text-content-faint">This folder is empty.</p>
+			} else {
+				<div class="row-grid border-b border-border px-3 pb-2.5">
+					<span class="text-xs font-semibold uppercase tracking-wide text-content-faint">Name</span>
+					<span class="text-xs font-semibold uppercase tracking-wide text-content-faint">Size</span>
+					<span class="text-xs font-semibold uppercase tracking-wide text-content-faint">Modified</span>
+					<span></span>
+				</div>
+				for _, f := range view.Folders {
+					@folderRowView(f)
+				}
+				for _, f := range view.Files {
+					@fileRowView(f)
+				}
+			}
+		</div>
+	</div>
+}
+
+templ folderRowView(row FolderRow) {
+	<div class="group row-grid items-center rounded-md border-b border-border px-3 py-2.5 hover:bg-surface-hover">
+		<a href={ templ.SafeURL(row.OpenURL) } class="flex min-w-0 items-center gap-2.5 text-sm">
+			<span class="flex-none text-primary">
+				@components.Icon(components.IconFolder)
+			</span>
+			<span class="truncate">{ row.Name }</span>
+		</a>
+		<span class="text-sm text-content-muted">&mdash;</span>
+		<span class="text-sm text-content-muted"></span>
+		@rowMenu(row.RenameURL, row.MoveURL, row.DeleteURL, "")
+	</div>
+}
+
+templ fileRowView(row FileRow) {
+	<div class="group row-grid items-center rounded-md border-b border-border px-3 py-2.5 hover:bg-surface-hover">
+		<div class="flex min-w-0 items-center gap-2.5 text-sm">
+			<span class="flex-none text-content-muted">
+				@components.Icon(row.Icon)
+			</span>
+			<span class="truncate">{ row.Name }</span>
+		</div>
+		<span class="text-sm tabular-nums text-content-muted">{ row.SizeDisplay }</span>
+		<span class="text-sm text-content-muted">{ row.ModifiedDisplay }</span>
+		@rowMenu(row.RenameURL, row.MoveURL, row.DeleteURL, row.DownloadURL)
+	</div>
+}
+
+templ rowMenu(renameURL, moveURL, deleteURL, downloadURL string) {
+	<details class="relative justify-self-end">
+		<summary class="row-menu-trigger flex h-7 w-7 items-center justify-center rounded-md text-content-muted opacity-0 hover:bg-surface-hover group-hover:opacity-100">
+			@components.Icon(components.IconMore)
+		</summary>
+		<div class="absolute right-0 top-8 z-20 w-44 rounded-lg border border-border bg-surface p-1 shadow-lg shadow-black/40">
+			<a href={ templ.SafeURL(renameURL) } hx-get={ renameURL } hx-target="#dialog-region" hx-swap="innerHTML" hx-push-url="true" class="flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm text-content hover:bg-surface-hover">
+				@components.Icon(components.IconEdit)
+				Rename
+			</a>
+			<a href={ templ.SafeURL(moveURL) } hx-get={ moveURL } hx-target="#dialog-region" hx-swap="innerHTML" hx-push-url="true" class="flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm text-content hover:bg-surface-hover">
+				@components.Icon(components.IconMove)
+				Move to&hellip;
+			</a>
+			if downloadURL != "" {
+				<a href={ templ.SafeURL(downloadURL) } class="flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm text-content hover:bg-surface-hover">
+					@components.Icon(components.IconDownload)
+					Download
+				</a>
+			}
+			<div class="my-1 h-px bg-border"></div>
+			<a href={ templ.SafeURL(deleteURL) } hx-get={ deleteURL } hx-target="#dialog-region" hx-swap="innerHTML" hx-push-url="true" class="flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm text-danger hover:bg-surface-hover">
+				@components.Icon(components.IconTrash)
+				Delete
+			</a>
+		</div>
+	</details>
+}

@@ -1,0 +1,39 @@
+package static
+
+import (
+	"crypto/sha256"
+	"embed"
+	"encoding/hex"
+	"io/fs"
+	"net/http"
+)
+
+//go:embed app.css htmx.min.js
+var files embed.FS
+
+var versions = hashFiles()
+
+func hashFiles() map[string]string {
+	v := map[string]string{}
+	entries, _ := fs.ReadDir(files, ".")
+	for _, e := range entries {
+		data, _ := fs.ReadFile(files, e.Name())
+		sum := sha256.Sum256(data)
+		v[e.Name()] = hex.EncodeToString(sum[:4])
+	}
+	return v
+}
+
+func URL(name string) string {
+	return "/static/" + name + "?v=" + versions[name]
+}
+
+func Handler() http.Handler {
+	fileServer := http.FileServerFS(files)
+	return http.StripPrefix("/static/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Query().Get("v") != "" {
+			w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+		}
+		fileServer.ServeHTTP(w, r)
+	}))
+}

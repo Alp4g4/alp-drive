@@ -1,0 +1,28 @@
+package views
+
+import "alp-drive/internal/delivery/web/views/components"
+
+type DeleteConfirmForm struct {
+	Title     string
+	Message   string
+	PostURL   string
+	CancelURL string
+}
+
+templ DeleteConfirmDialog(form DeleteConfirmForm) {
+	@components.DialogShell(form.Title) {
+		<p class="mb-4 text-sm text-content-muted">{ form.Message }</p>
+		<form
+			method="post"
+			action={ form.PostURL }
+			hx-post={ form.PostURL }
+			hx-target="#dialog-region"
+			hx-swap="innerHTML"
+			hx-disabled-elt="find button[type=submit]"
+			class="flex justify-end gap-2.5"
+		>
+			@components.LinkButton(form.CancelURL, components.LinkButtonProps{ButtonProps: components.ButtonProps{Label: "Cancel", Variant: components.ButtonGhost}})
+			@components.Button(components.ButtonProps{Label: "Delete", Variant: components.ButtonDanger, Submit: true})
+		</form>
+	}
+}

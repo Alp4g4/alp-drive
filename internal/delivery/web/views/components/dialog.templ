@@ -1,0 +1,9 @@
+package components
+
+templ DialogShell(title string) {
+	<div class="fixed inset-0 z-40 bg-black/60"></div>
+	<dialog open class="fixed left-1/2 top-1/2 z-50 w-96 -translate-x-1/2 -translate-y-1/2 rounded-xl border border-border bg-surface p-5 shadow-2xl shadow-black/50">
+		<h2 class="mb-4 text-sm font-semibold text-content">{ title }</h2>
+		{ children... }
+	</dialog>
+}
