@@ -44,8 +44,8 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
-            type=semver,pattern=alp-drive-v{{version}}
-            type=semver,pattern=alp-drive-v{{major}}.{{minor}}
+            type=match,pattern=alp-drive-v(.*)
+            type=match,pattern=alp-drive-v(\d+\.\d+)\.\d+,group=1
 
       - name: Build and push image
         uses: docker/build-push-action@v6
