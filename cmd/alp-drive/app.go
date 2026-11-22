@@ -76,6 +76,10 @@ func NewApp() (*App, error) {
 	}
 	closers := []func() error{db.Close}
 
+	if err := sqlite.Migrate(ctx, db); err != nil {
+		return nil, fmt.Errorf("migrating database: %w", err)
+	}
+
 	store := sqlite.NewStore(db)
 	files := localfs.NewFileStore(cfg.FilesDir)
 	clk := system.NewClock()

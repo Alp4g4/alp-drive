@@ -3,13 +3,10 @@ package sqlite
 import (
 	"context"
 	"errors"
-	"os"
 	"path/filepath"
 	"testing"
 	"time"
 	"uuid"
-
-	"github.com/pressly/goose/v3"
 
 	usecasefile "alp-drive/internal/application/usecases/file"
 	usecasefolder "alp-drive/internal/application/usecases/folder"
@@ -27,11 +24,7 @@ func newTestStore(t *testing.T) *Store {
 	}
 	t.Cleanup(func() { db.Close() })
 
-	provider, err := goose.NewProvider(goose.DialectSQLite3, db, os.DirFS("migrations"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	if _, err := provider.Up(ctx); err != nil {
+	if err := Migrate(ctx, db); err != nil {
 		t.Fatalf("migrating: %v", err)
 	}
 

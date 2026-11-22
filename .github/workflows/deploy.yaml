@@ -1,0 +1,38 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [Build]
+    types: [completed]
+
+jobs:
+  deploy:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve image tag
+        id: tag
+        run: |
+          ref="${{ github.event.workflow_run.head_branch }}"
+          echo "version=${ref#alp-drive-v}" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          envs: IMAGE_TAG
+          script: |
+            set -euo pipefail
+
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+            mkdir -p /opt/alp-drive/backups
+            cp /opt/alp-drive/data/alp-drive.db "/opt/alp-drive/backups/alp-drive-${IMAGE_TAG}-$(date +%Y%m%dT%H%M%S).db"
+
+            cd /opt/alp-drive
+            docker compose pull
+            docker compose up -d
+        env:
+          IMAGE_TAG: ${{ steps.tag.outputs.version }}
