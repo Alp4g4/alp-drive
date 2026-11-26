@@ -15,6 +15,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// This is a fake comment, added to test the comment on PR flow.
 func main() {
 	if err := godotenv.Load(); err != nil {
 		if !errors.Is(err, fs.ErrNotExist) {
