@@ -266,6 +266,9 @@ func TestList_HeaderShowsLogo(t *testing.T) {
 	if i < 0 || !strings.Contains(body[i:], `alt="alp-drive"`) {
 		t.Fatalf("want the logo image with alt alp-drive, got %q", body)
 	}
+	if !strings.Contains(body[i:], `width="250" height="150"`) {
+		t.Errorf("want the logo sized 250x150, got %q", body[i:])
+	}
 
 	svg := do(t, router, "GET", "/static/assets/alp-drive-dark.svg", nil, nil)
 	if svg.Code != 200 || !strings.Contains(svg.Body.String(), "<svg") {
