@@ -48,8 +48,8 @@ templ DrivePage(title string, view DriveView, dialog templ.Component) {
 
 templ DriveBrowser(view DriveView) {
 	<div id="drive-browser">
-		<header class="flex h-14 items-center justify-between border-b border-border px-6">
-			<img src={ static.URL("assets/alp-drive-dark.svg") } alt="alp-drive" height="24" class="block"/>
+		<header class="flex items-center justify-between border-b border-border px-6 py-2">
+			<img src={ static.URL("assets/alp-drive-dark.svg") } alt="alp-drive" width="250" height="150" class="block"/>
 		</header>
 		<div class="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
 			<nav aria-label="Breadcrumb" class="flex min-w-0 items-center gap-1.5 text-sm text-content-muted">

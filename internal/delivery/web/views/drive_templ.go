@@ -116,7 +116,7 @@ func DriveBrowser(view DriveView) templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"drive-browser\"><header class=\"flex h-14 items-center justify-between border-b border-border px-6\"><img src=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"drive-browser\"><header class=\"flex items-center justify-between border-b border-border px-6 py-2\"><img src=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -129,7 +129,7 @@ func DriveBrowser(view DriveView) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" alt=\"alp-drive\" height=\"24\" class=\"block\"></header><div class=\"flex flex-wrap items-center justify-between gap-4 px-6 py-4\"><nav aria-label=\"Breadcrumb\" class=\"flex min-w-0 items-center gap-1.5 text-sm text-content-muted\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" alt=\"alp-drive\" width=\"250\" height=\"150\" class=\"block\"></header><div class=\"flex flex-wrap items-center justify-between gap-4 px-6 py-4\"><nav aria-label=\"Breadcrumb\" class=\"flex min-w-0 items-center gap-1.5 text-sm text-content-muted\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
