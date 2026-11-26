@@ -8,19 +8,22 @@ import (
 	"net/http"
 )
 
-//go:embed app.css app.js htmx.min.js
+//go:embed app.css app.js htmx.min.js assets
 var files embed.FS
 
 var versions = hashFiles()
 
 func hashFiles() map[string]string {
 	v := map[string]string{}
-	entries, _ := fs.ReadDir(files, ".")
-	for _, e := range entries {
-		data, _ := fs.ReadFile(files, e.Name())
+	_ = fs.WalkDir(files, ".", func(name string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return err
+		}
+		data, _ := fs.ReadFile(files, name)
 		sum := sha256.Sum256(data)
-		v[e.Name()] = hex.EncodeToString(sum[:4])
-	}
+		v[name] = hex.EncodeToString(sum[:4])
+		return nil
+	})
 	return v
 }
 
