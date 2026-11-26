@@ -256,3 +256,19 @@ func TestCrossOriginPostIsRejected(t *testing.T) {
 		t.Errorf("same-origin = %d, want 303", same.Code)
 	}
 }
+
+func TestList_HeaderShowsLogo(t *testing.T) {
+	router := newTestRouter(routerDeps{folders: fakeFolderLister{}})
+
+	page := do(t, router, "GET", "/folders", nil, nil)
+	body := page.Body.String()
+	i := strings.Index(body, `src="/static/assets/alp-drive-dark.svg?v=`)
+	if i < 0 || !strings.Contains(body[i:], `alt="alp-drive"`) {
+		t.Fatalf("want the logo image with alt alp-drive, got %q", body)
+	}
+
+	svg := do(t, router, "GET", "/static/assets/alp-drive-dark.svg", nil, nil)
+	if svg.Code != 200 || !strings.Contains(svg.Body.String(), "<svg") {
+		t.Errorf("logo asset: status %d", svg.Code)
+	}
+}
