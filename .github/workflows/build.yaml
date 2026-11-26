@@ -46,6 +46,7 @@ jobs:
           tags: |
             type=match,pattern=alp-drive-v(.*)
             type=match,pattern=alp-drive-v(\d+\.\d+)\.\d+,group=1
+            type=raw,value=latest
 
       - name: Build and push image
         uses: docker/build-push-action@v6
