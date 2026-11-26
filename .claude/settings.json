@@ -1,0 +1,15 @@
+{
+  "extraKnownMarketplaces": {
+    "alp-agora": {
+      "source": {
+        "source": "github",
+        "repo": "Alp4g4/alp-agora"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "go@alp-agora": true,
+    "web-design@alp-agora": true,
+    "dev-agent@alp-agora": true
+  }
+}
